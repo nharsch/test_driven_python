@@ -14,7 +14,7 @@ class NewVisitorTest(unittest.TestCase):
 
 	def test_can_start_a_list_and_retrieve_it_later(self):
 		#test URL
-		self.browser.get('http://localhost:5000')
+		self.browser.get('http://localhost:8000')
 
 		# page title and header mention to-do lists
 		self.assertIn('To-Do', self.browser.title)
@@ -35,16 +35,28 @@ class NewVisitorTest(unittest.TestCase):
 		# user hits enter, the page updates, page lists:
 		# "1: Buy peacock feathers" as an item in a to-do list table
 		inputbox.send_keys(Keys.ENTER)
-		# time.sleep(10)
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(
-			any(row.text == '1: Buy peacock feathers' for row in rows),
-			"New to-do item did not appear in table"
-		)
+
+		self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
 
 		# still a text box inviting user to add another item, user enters:
 		# "Use peacock feathers to make a fly"
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Use peacock feathers to make a fly')
+		inputbox.send_keys(Keys.ENTER)
+
+		# The page updates again, and now shows both items on her list
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn(
+			'2: Use peacock feathers to make a fly', 
+			[row.text for row in rows]
+		)
+
+		# Edith wonders whether the stie will remember he list. Then she 
+		# sees that the site has generated a unique URL for here -- there is some
+		# explanatory text to that effect.
 		self.fail('Finish the test')
 
 if __name__ == '__main__':
