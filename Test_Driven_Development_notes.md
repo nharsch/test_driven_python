@@ -14,3 +14,5 @@ Red, Green, Refactor
 always commit before refactoring
 
 only methods that start with test_ get run as tests
+
+*lef off at Django ORM and Our First Module
