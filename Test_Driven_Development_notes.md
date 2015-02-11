@@ -12,3 +12,5 @@ Red, Green, Refactor
 3 strikes and refactor
 
 always commit before refactoring
+
+only methods that start with test_ get run as tests
