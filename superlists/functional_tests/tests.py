@@ -11,7 +11,7 @@ class NewVisitorTest(LiveServerTestCase):
 		self.browser.implicitly_wait(2)
 
 	def tearDown(self):
-		self.browser.quit()
+		self.browser.close()
 
 	def check_for_row_in_list(self, row_text):
 		table = self.browser.find_element_by_id('id_list_table')
@@ -59,7 +59,7 @@ class NewVisitorTest(LiveServerTestCase):
 
 		## We use a new browser session to make sure that no information 
 		## of Edith's is coming though from the cookies etc
-		self.broswer.qui()
+		self.browser.quit()
 		self.broswer = webdriver.Firefox()
 
 		# Francis visits the home page.  There is no sign of Edith's list
