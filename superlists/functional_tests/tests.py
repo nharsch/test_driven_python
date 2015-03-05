@@ -41,6 +41,8 @@ class NewVisitorTest(LiveServerTestCase):
 		# user hits enter, the page updates, page lists:
 		# "1: Buy peacock feathers" as an item in a to-do list table
 		inputbox.send_keys(Keys.ENTER)
+		edith_list_url = self.browser.current_url # assume that this url is unique to Edith's list
+		self.assertRegex(edith_list_url, '/lists/.+') # look for regex match, that url includes /lists/
 		self.check_for_row_in_list('1: Buy peacock feathers')
 
 		# still a text box inviting user to add another item, user enters:
@@ -52,6 +54,36 @@ class NewVisitorTest(LiveServerTestCase):
 		# The page updates again, and now shows both items on her list
 		self.check_for_row_in_list('1: Buy peacock feathers')
 		self.check_for_row_in_list('2: Use peacock feathers to make a fly')
+
+		# Now a new user, Francis, comes along to the site.
+
+		## We use a new browser session to make sure that no information 
+		## of Edith's is coming though from the cookies etc
+		self.broswer.qui()
+		self.broswer = webdriver.Firefox()
+
+		# Francis visits the home page.  There is no sign of Edith's list
+		self.broswer.get(self.live_server_url)
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('Buy Peacock', page_text)
+		self.assertNotIn('make a fly', page_text)
+
+		# Fancis starts a new list by entering a new item. He is less
+		# interesting than Edith / / /
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Buy milk')
+		inputbox.send_keys(Keys.ENTER)
+
+		# Francis gets his own URL
+		francis_list_url - self.broswer.current_url
+		self.assertRegex(francis_list_url, 'lists/.+')
+		self.asserNotEqual(francis_list_url, edith_list_url)
+
+		# Again, there is no trace of Edith'slist
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('Bue peacock', page_text)
+		self.assertIn('Buy milk', page_text)
+
 
 		# Edith wonders whether the stie will remember he list. Then she 
 		# sees that the site has generated a unique URL for here -- there is some
