@@ -87,13 +87,23 @@ class ListViewTest(TestCase):
         Item.objects.create(text='other list item 1', list=other_list)
         Item.objects.create(text='other list item 2', list=other_list)
 
-        response = self.client.get('/lists/%d/' % (correct_list.id,))
-
+        response = self.client.get('/lists/{}/'.format(correct_list.id,))
+        self.assertEquals(response.status_code, 200)
+        print(response.content)
+        print([item.text for item in Item.objects.filter(list=correct_list)])
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
         self.assertNotContains(response, 'other list item 1')
-        self.assertContains(response, 'itemey 2')
         self.assertNotContains(response, 'other list item 2')
+
+    def test_passes_correct_list_to_template(self):
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+        # print(url)
+        response = self.client.get('/lists/{}/'.format(correct_list.id))
+        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.context['list'], correct_list)
+
 
 
 class NewItemTest(TestCase):
