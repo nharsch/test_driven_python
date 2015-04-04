@@ -10,6 +10,7 @@ def home_page(request):
 
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
+    print(list_)
     return render(request, 'list.html', {'list': list_})
 
 
