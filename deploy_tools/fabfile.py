@@ -18,14 +18,14 @@ def deploy():
 
 def _create_directory_structure_if_necessary(site_folder):
     for subfolder in ('database', 'static', 'virtualenv', 'source'):
-        run('mkdir -p {}{}'.format(site_folder, subfolder))
+        run('mkdir -p {}/{}'.format(site_folder, subfolder))
 
 
 def _get_latest_source(source_folder):
     if exists(source_folder + '/.git'):
         run('cd {} && git fetch'.format(source_folder,))
     else:
-        run('git clone {}{}'.format(REPO_URL, source_folder))
+        run('git clone {}'.format(REPO_URL))
     current_commit = local("git log -n 1 --format=%H", capture=True)
     run('cd {} && git reset --hard {}'.format(source_folder, current_commit))
 
