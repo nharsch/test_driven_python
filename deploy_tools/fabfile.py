@@ -18,24 +18,24 @@ def deploy():
 
 def _create_directory_structure_if_necessary(site_folder):
     for subfolder in ('database', 'static', 'virtualenv', 'source'):
-        run('mkdir -p {}/{}'.format(site_folder, subfolder))
+        run('mkdir -p {}/{}'.format(site_folder, subfolder)) # only create directories if they don't exist
 
 
 def _get_latest_source(source_folder):
-    if exists(source_folder + '/.git'):
-        run('cd {} && git fetch'.format(source_folder,))
+    if exists(source_folder + '/.git'):  # if git repo exists on server
+        run('cd {} && git fetch'.format(source_folder,))  # fetch new files
     else:
-        run('git clone {}'.format(REPO_URL))
-    current_commit = local("git log -n 1 --format=%H", capture=True)
-    run('cd {} && git reset --hard {}'.format(source_folder, current_commit))
+        run('git clone {}'.format(REPO_URL)) # if no repo, clone repo from github
+    current_commit = local("git log -n 1 --format=%H", capture=True)  # get hash of current commit in local tree
+    run('cd {} && git reset --hard {}'.format(source_folder, current_commit))  # reset repo to last commit, wiping and un pushed changes
 
 
 def _update_settings(source_folder, site_name):
     settings_path = source_folder + "/superlists/settings.py"
-    sed(settings_path, "DEBUG = True", "DEBUG = False")
+    sed(settings_path, "DEBUG = True", "DEBUG = False")  # make sure DEBUG is False
     sed(settings_path,
         'ALLOWED_HOSTS =.+$'
-        'ALLOWED_HOSTS = [{}]'.format(site_name,)
+        'ALLOWED_HOSTS = [{}]'.format(site_name,)  # make sure site_name is in allowed hosts
     )
     secret_key_file = source_folder + '/superlists/secret_key.py'
     if not exists(secret_key_file):
@@ -47,7 +47,7 @@ def _update_settings(source_folder, site_name):
 
 def _update_virtualenv_(source_folder):
     virtualenv_folder = source_folder + '/../virtualenv'
-    if not exists(virtualenv_folder + '/bin/pip'):
+    if not exists(virtualenv_folder + '/bin/pip'):  # create env if none exists
         run('virtualenv --python=python3 {}'.format(virtualenv_folder,))
     run('{}/bin/pip install -r {}/requirements.txt'.format(virtualenv_folder, source_folder
     ))
