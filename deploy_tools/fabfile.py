@@ -11,7 +11,7 @@ def deploy():
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
     _update_settings(source_folder, env.host)
-    _update_virtualenc(source_folder)
+    _update_virtualenv(source_folder)
     _update_static_files(source_folder)
     _update_database(source_folder)
 
@@ -34,7 +34,7 @@ def _update_settings(source_folder, site_name):
     settings_path = source_folder + "/superlists/settings.py"
     sed(settings_path, "DEBUG = True", "DEBUG = False")  # make sure DEBUG is False
     sed(settings_path,
-        'ALLOWED_HOSTS =.+$'
+        'ALLOWED_HOSTS =.+$',
         'ALLOWED_HOSTS = [{}]'.format(site_name,)  # make sure site_name is in allowed hosts
     )
     secret_key_file = source_folder + '/superlists/secret_key.py'
