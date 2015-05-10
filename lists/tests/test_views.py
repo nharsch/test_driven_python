@@ -19,6 +19,12 @@ class HomePageTest(TestCase):
         response = self.client.get('/')
         self.assertIsInstance(response.context['form'], ItemForm)
 
+    def test_home_page_returns_correct_html(self):
+        request = HttpRequest()
+        response = home_page(request)
+        expected_html = render_to_string('home.html', {'form': ItemForm()})
+        self.assertMultiLineEqual(response.content.decode(), expected_html)
+
 class NewListTest(TestCase):
 
     def test_saving_a_POST_request(self):
