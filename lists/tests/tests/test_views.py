@@ -4,7 +4,6 @@ from django.template.loader import render_to_string
 from django.test import TestCase
 from django.utils.html import escape
 
-from lists.forms import ItemForm
 from lists.models import Item, List
 from lists.views import home_page
 
@@ -58,11 +57,7 @@ class NewListTest(TestCase):
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_displays_item_form(self):
-        list_ = List.objects.create()
-        response = self.client.get('/lists/{}/'.format(list_.id,))
-        self.assertIsInstance(response.context['form'], ItemForm)
-        self.assertContains(response, 'name="text"')
+
 
 class ListViewTest(TestCase):
 
